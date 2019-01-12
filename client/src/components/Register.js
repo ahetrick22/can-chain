@@ -17,7 +17,8 @@ class Register extends Component {
       username: '',
       password: '',
       verifyPassword: '',
-      accountAddress: this.props.accounts[0]
+      accountAddress: this.props.accounts[0],
+      passwordMismatch: false
     }
     this.contracts = context.drizzle.contracts;
   }
@@ -56,7 +57,30 @@ class Register extends Component {
     //log in a user (non-Metamask)
     handleSignUpClick = () =>  {
       //verify that same password was entered twice
-      console.log(this.contracts);
+      if(!this.validateVerifiedPassword()) {
+        this.setState({ passwordMismatch: true });
+      } else {
+        const data = {
+          centerName: this.state.centerName, 
+          city: this.state.city,
+          state: this.state.city,
+          contactName: this.contactName,
+          username: this.state.username,
+          password: this.state.password,
+          accountAddress: this.state.accountAddress
+        } 
+        fetch('/auth/signup', {
+          method: 'POST', 
+          headers: {"Content-Type": "application/json"}, 
+          mode: "cors", 
+          body: JSON.stringify(data)
+        })
+            .then(res => res.json()
+            .then(data => {
+              console.log(data);
+            })
+            )          
+      }
       //console.log(this.state);
       //const data = { username: this.state.username, password: this.state.password }
       // fetch('/auth/signin', {method: 'POST', headers: {"Content-Type": "application/json"}, mode: "cors", body: JSON.stringify(data)})
@@ -92,6 +116,7 @@ class Register extends Component {
       onChange={event => this.onVerifyPasswordChange(event.target.value)}></input>
              <button onClick={this.handleSignUpClick}>Register Account</button> 
              <br />
+             <Link to='/'>Back to Home</Link>
             </>
         )  
   }
