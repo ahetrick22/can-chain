@@ -12,7 +12,7 @@ const pool  = mysql.createPool({
 });
 
 const tokenForUser = user => {
-  return jwt.encode({ sub: user.id,
+  return jwt.encode({ sub: user[0].id,
     iat: Math.round(Date.now() / 1000),
     exp: Math.round(Date.now() / 1000 + 5 * 60 * 60)}, keys.TOKEN_SECRET)
 }
@@ -33,7 +33,7 @@ exports.signin = (req, res, next) => {
 }
 
 exports.currentUser = (req, res) => {
-  res.send(req.user)
+  res.json(req.user[0])
 }
 
 exports.signup = async (req, res, next) => {
