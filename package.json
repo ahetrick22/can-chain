@@ -24,6 +24,7 @@
     "passport": "^0.4.0",
     "passport-jwt": "^4.0.0",
     "passport-local": "^1.0.0",
+    "redux-thunk": "^2.3.0",
     "truffle": "^5.0.1"
   }
 }

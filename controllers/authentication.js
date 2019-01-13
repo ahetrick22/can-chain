@@ -37,8 +37,8 @@ exports.currentUser = (req, res) => {
 }
 
 exports.signup = async (req, res, next) => {
-  const username = req.body.username
-  const password = req.body.password
+  const { username, password, centerName, city, state, accountAddress, contactName, accountType } = req.body;
+  console.log(contactName);
 
   if (!username || !password) {
     return res.status(422).send({ error: 'You must provide username and password'})
@@ -56,17 +56,15 @@ exports.signup = async (req, res, next) => {
 
     // If a user with username does NOT exist, create and save user record
     await pool.query(`INSERT INTO users(
-      \`username\`)
+      \`username\`, \`name\`, \`city\`,\`state\`,\`contact_full_name\`,\`account_address\`, \`account_type\`)
       VALUES
-      ('${username}')`, async (err, user) => {
+      ('${username}', '${centerName}', '${city}', '${state}', '${contactName}', '${accountAddress}', '${accountType}')`, async (err, user) => {
         if (err) { return next(err) }
         const { salt, hash } = await setPassword(password);
-        console.log(salt);
         await pool.query(`UPDATE users SET \`salt\`='${salt}', \`hash\`='${hash}' WHERE \`username\`='${username}'`, async (err, result) => {
          // Respond to request indicating the user was created
         await res.json({ token: tokenForUser(user) })
         })
-
       })
 
     

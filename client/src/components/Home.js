@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
-import { drizzleConnect } from 'drizzle-react'
-import { AccountData, ContractData } from 'drizzle-react-components';
 import { Link } from 'react-router-dom';
+import * as actions from '../actions';
+import { connect } from 'react-redux';
 
 class Home extends Component {
 
@@ -25,8 +25,9 @@ class Home extends Component {
     //log in a user (non-Metamask)
     handleLoginClick = () =>  {
       const data = { username: this.state.username, password: this.state.password }
-      fetch('/auth/signin', {method: 'POST', headers: {"Content-Type": "application/json"}, mode: "cors", body: JSON.stringify(data)})
-        .then(res => res.json()).then(data => localStorage.setItem('token', data.token));
+      this.props.login(data, () => {
+        this.props.history.push('/');
+      });
   }
 
     render() {
@@ -46,16 +47,4 @@ class Home extends Component {
   }
 }
 
-const mapStateToProps = state => {
-  return {
-    accounts: state.accounts,
-    drizzleStatus: state.drizzleStatus,
-    contracts: state.contracts
-  }
-}
-
-
-export default drizzleConnect(Home, mapStateToProps);
-
-// <p>The recycling plant for this application is at address: <ContractData contract="BagCount" method="recyclingPlant" /></p>
-// Currently logged in as account: <AccountData accountIndex="0" units="ether" precision="3" />
+export default connect(null, actions)(Home);

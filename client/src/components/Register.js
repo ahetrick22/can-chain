@@ -18,6 +18,7 @@ class Register extends Component {
       password: '',
       verifyPassword: '',
       accountAddress: this.props.accounts[0],
+      accountType: 'center',
       passwordMismatch: false
     }
     this.contracts = context.drizzle.contracts;
@@ -54,6 +55,10 @@ class Register extends Component {
       this.setState({ verifyPassword })
     }
 
+    handleOptionChange = accountType => {
+      this.setState({ accountType });
+    }
+
     //log in a user (non-Metamask)
     handleSignUpClick = () =>  {
       //verify that same password was entered twice
@@ -63,11 +68,12 @@ class Register extends Component {
         const data = {
           centerName: this.state.centerName, 
           city: this.state.city,
-          state: this.state.city,
-          contactName: this.contactName,
+          state: this.state.state,
+          contactName: this.state.contactName,
           username: this.state.username,
           password: this.state.password,
-          accountAddress: this.state.accountAddress
+          accountAddress: this.state.accountAddress,
+          accountType: this.state.accountType
         } 
         fetch('/auth/signup', {
           method: 'POST', 
@@ -95,8 +101,8 @@ class Register extends Component {
              <input type='text' value={this.state.centerName}
       onChange={event => this.onCenterNameChange(event.target.value)}></input>               
               <label>City</label>
-              <input type='text' value={this.state.username}
-      onChange={event => this.onCityInputChange(event.target.value)}></input>
+              <input type='text' value={this.state.city}
+      onChange={event => this.onCityChange(event.target.value)}></input>
               <label>State</label>
               <input type='text' value={this.state.state}
       onChange={event => this.onStateChange(event.target.value)}></input>
@@ -114,6 +120,10 @@ class Register extends Component {
     <label>Verify Password</label>
      <input type='password' value={this.state.verifyPassword}
       onChange={event => this.onVerifyPasswordChange(event.target.value)}></input>
+          <label>Redemption Center</label>
+      <input type="radio" name="accountType" value="center" checked={this.state.accountType === "center"} onChange={event => this.handleOptionChange(event.target.value)}></input>
+      <label>Recycling Plant</label>
+      <input type="radio" name="accountType" value="plant" checked={this.state.accountType === "plant"} onChange={event => this.handleOptionChange(event.target.value)}></input>
              <button onClick={this.handleSignUpClick}>Register Account</button> 
              <br />
              <Link to='/'>Back to Home</Link>
